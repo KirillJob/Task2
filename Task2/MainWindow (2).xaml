@@ -1,0 +1,154 @@
+﻿<Window x:Class="Task2.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:Task2"
+        xmlns:sys="clr-namespace:System;assembly=mscorlib"
+        xmlns:window="clr-namespace:System.Windows.Forms.Integration;assembly=WindowsFormsIntegration"
+        xmlns:wf="clr-namespace:System.Windows.Forms;assembly=System.Windows.Forms"
+        mc:Ignorable="d"
+        Title="MainWindow" Height="540" Width="1411" Loaded="Window_Loaded">
+
+    <Window.Resources>
+        <local:KPKtestDataSet x:Key="kPKtestDataSet"/>
+        <CollectionViewSource x:Key="testsViewSource" Source="{Binding Tests, Source={StaticResource kPKtestDataSet}}"/>
+    </Window.Resources>
+    
+    <Grid Margin="0,0,0,5" HorizontalAlignment="Left" Height="auto" DataContext="{StaticResource testsViewSource}" Background="#FFF0F0F0">
+
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="*" />
+            <ColumnDefinition Width="*" />
+        </Grid.ColumnDefinitions>
+
+        <Grid.RowDefinitions>
+            <RowDefinition Height="*" MinHeight="20"/>
+            <RowDefinition Height="*" MinHeight="20"/>
+        </Grid.RowDefinitions>
+
+        <Label Content="История проверок" HorizontalAlignment="Center" Height="30" FontSize="14" VerticalAlignment="Top" RenderTransformOrigin="0.475,0.078" Grid.Row="0" Grid.Column="0" HorizontalContentAlignment="Center" Width="847" Background="#FFA6C8EE"/>
+
+        <WrapPanel Orientation="Horizontal" Grid.Row="0" Grid.Column="0" Margin="0,32,0,0">
+            <GroupBox Header="Добавить" Margin="25,5,0,0">
+                <StackPanel>
+                    <DockPanel Margin="0,5,0,0">
+                        <Label Content="Дата проверки: "/>
+                        <DateTimePicker />
+                        <DatePicker x:Name="insertDataPicker" SelectedDate="{x:Static sys:DateTime.Now}" Width="94" HorizontalAlignment="Right" HorizontalContentAlignment="Stretch" FontSize="11" SelectedDateFormat="Short" />
+                    </DockPanel>
+                    <WrapPanel Orientation="Horizontal"  Margin="0,5,0,0">
+                        <Label Content="Название блока: "/>
+                        <TextBox x:Name="blockNameInsertTextBox" MaxLength="50" Width="94"/>
+                    </WrapPanel>
+                    <WrapPanel Orientation="Vertical">
+                        <Label Content="Примечание: "/>
+                        <TextBox x:Name="noteInsertTextBox" MaxLength="200" Height="68" Width="198" TextWrapping="Wrap"/>
+                    </WrapPanel>
+                    <Button x:Name="insertButton" Content="ОК" Margin="0,5,0,0" Click="insertButton_Click" ToolTip="Добавить новую проверку" HorizontalAlignment="Left" Width="60"/>
+                </StackPanel>
+            </GroupBox>
+
+            <GroupBox Header="Изменить" Margin="5,5,0,0">
+                <StackPanel>
+                    <DockPanel Margin="0,5,0,0">
+                        <Label Content="Дата проверки: "/>
+                        <DatePicker x:Name="changeDataPicker" SelectedDate="{x:Static sys:DateTime.Now}" Width="94" HorizontalAlignment="Right" HorizontalContentAlignment="Stretch" FontSize="11"/>
+                    </DockPanel>
+                    <WrapPanel Orientation="Horizontal"  Margin="0,5,0,0">
+                        <Label Content="Название блока: "/>
+                        <TextBox x:Name="blockNameChangeTextBox" MaxLength="50" Width="94"/>
+                    </WrapPanel>
+                    <WrapPanel Orientation="Vertical">
+                        <Label Content="Примечание: "/>
+                        <TextBox x:Name="noteChangeTextBox" MaxLength="200" Height="68" Width="198" TextWrapping="Wrap"/>
+                    </WrapPanel>
+                    <Button x:Name="refreshButton" Content="ОК" Margin="0,5,0,0" Click="changeButton_Click" ToolTip="Добавить новую проверку" HorizontalAlignment="Left" Width="60"/>
+                </StackPanel>
+            </GroupBox>
+            <Button x:Name="deleteButton" Content="Удалить"  Margin="5,0,0,6" Click="deleteButton_Click" ToolTip="Удалить из таблицы выбранную запись" Height="20" VerticalAlignment="Bottom" Width="60"/>
+        </WrapPanel>
+        
+        <DataGrid AutoGenerateColumns="False" x:Name="testsGrid" HorizontalAlignment="Center" Grid.Row="1" Grid.Column="0" Margin="0" Width="650" MinHeight="250" HorizontalGridLinesBrush="DarkGray"
+    RowBackground="LightGray" AlternatingRowBackground="White" IsReadOnly="True" SelectionChanged="testsGrid_SelectionChanged" SelectionMode="Single">
+            <DataGrid.Columns>
+                <DataGridTextColumn Binding="{Binding TestDate}" Header="Дата проведения проверки" Width="165" />
+                <DataGridTextColumn Binding="{Binding BlockName}" Header="Наименование проверяемого блока" Width="220" />
+                <DataGridTextColumn Binding="{Binding Note}" Header="Примечание" Width="*" />
+            </DataGrid.Columns>
+        </DataGrid>
+             
+        <Separator VerticalAlignment="Stretch" HorizontalAlignment="Right" Grid.RowSpan="2" Height="1">
+            <Separator.LayoutTransform>
+                <RotateTransform Angle="90" />
+            </Separator.LayoutTransform>
+        </Separator>
+
+        <WrapPanel Orientation="Vertical" Grid.Row="0" Grid.Column="1">
+            <Label Content="Параметры проверки" HorizontalAlignment="Center" Height="30" FontSize="14" VerticalAlignment="Top" Grid.Row="0" Grid.Column="1" HorizontalContentAlignment="Center" Width="847" Grid.ColumnSpan="2" Background="#FFA6C8EE"/>
+            <Label x:Name="labelSelTest" Grid.Row="0" Grid.Column="1" Margin="19,0,0,0"/>
+        </WrapPanel>
+
+        
+        <WrapPanel Orientation="Horizontal" Grid.Row="0" Grid.Column="1" Margin="0,47,0,0" >
+            <GroupBox Header="Добавить" Margin="25,5,0,0" Height="189">
+                <StackPanel>
+                    <DockPanel Margin="0,5,0,0">
+                        <Label Content="Наименование параметра: "/>
+                        <TextBox x:Name="parameterNameInsertTextBox" Width="94" HorizontalAlignment="Right" MaxLength="200"/>
+                    </DockPanel>
+                    <DockPanel Margin="0,5,0,0">
+                        <Label Content="Требуемое значение: "/>
+                        <TextBox x:Name="requiredValueInsertTextBox" Width="94" HorizontalAlignment="Right"/>
+                    </DockPanel>
+                    <DockPanel Margin="0,5,0,0">
+                        <Label Content="Измеренное значение: "/>
+                        <TextBox x:Name="measuredValueInsertTextBox" Width="94" HorizontalAlignment="Right"/>
+                    </DockPanel>
+                    <Button x:Name="insertTabParamButton" Content="ОК" Margin="0,53,0,0" Click="insertTabParamButton_Click" ToolTip="Добавить новый параметр" Width="60" HorizontalAlignment="Left" VerticalAlignment="Bottom" IsEnabled="False"/>
+                </StackPanel>
+            </GroupBox>
+
+            <GroupBox Header="Изменить" Margin="5,5,0,0" Height="189">
+                <StackPanel>
+                    <DockPanel Margin="0,5,0,0">
+                        <Label Content="Наименование параметра: "/>
+                        <TextBox x:Name="parameterNameChangeTextBox" Width="94" HorizontalAlignment="Right" MaxLength="200"/>
+                    </DockPanel>
+                    <DockPanel Margin="0,5,0,0">
+                        <Label Content="Требуемое значение: "/>
+                        <TextBox x:Name="requiredValueChangeTextBox" Width="94" HorizontalAlignment="Right"/>
+                    </DockPanel>
+                    <DockPanel Margin="0,5,0,0">
+                        <Label Content="Измеренное значение: "/>
+                        <TextBox x:Name="measuredValueChangeTextBox" Width="94" HorizontalAlignment="Right"/>
+                    </DockPanel>
+                    <Button x:Name="changeTabParamButton" Content="ОК" Margin="0,53,0,0" Click="changeTabParamButton_Click" ToolTip="Изменить выбранный параметр " Width="60" HorizontalAlignment="Left" VerticalAlignment="Bottom" IsEnabled="False"/>
+                </StackPanel>
+            </GroupBox>
+            <Button x:Name="deleteTabParamButton" Content="Удалить"  Margin="5,0,0,6" Click="deleteTabParamButton_Click" ToolTip="Удалить из таблицы выбранную запись" Height="20" VerticalAlignment="Bottom" Width="60" IsEnabled="False"/>
+        </WrapPanel>
+
+
+
+        <DataGrid AutoGenerateColumns="False" x:Name="parametrGrid" HorizontalAlignment="Center" Margin="0" Width="650" MinHeight="250" Grid.Row="1" Grid.Column="1" MinWidth="650" HorizontalGridLinesBrush="DarkGray"
+    RowBackground="LightGray" AlternatingRowBackground="White" IsReadOnly="True" SelectionMode="Single" SelectionChanged="parametersGrid_SelectionChanged">
+
+            <DataGrid.Columns>
+                <DataGridTextColumn Binding="{Binding ParameterName}" Header="Наименование параметра" Width="*" />
+                <DataGridTextColumn Binding="{Binding RequiredValue}"  Width="90" >
+                    <DataGridTextColumn.Header>
+                        <TextBlock Text="Требуемое значение параметра" TextWrapping="Wrap" />
+                    </DataGridTextColumn.Header>
+                </DataGridTextColumn>
+
+                <DataGridTextColumn Binding="{Binding MeasuredValue}" Width="90">
+                    <DataGridTextColumn.Header>
+                        <TextBlock Text="Измеренное значение параметра" TextWrapping="Wrap" />
+                    </DataGridTextColumn.Header>
+                </DataGridTextColumn>
+            </DataGrid.Columns>
+        </DataGrid>
+
+    </Grid>
+</Window>

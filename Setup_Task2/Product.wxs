@@ -1,0 +1,86 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Wix xmlns="http://schemas.microsoft.com/wix/2006/wi"
+     xmlns:util='http://schemas.microsoft.com/wix/UtilExtension'
+     xmlns:sql='http://schemas.microsoft.com/wix/SqlExtension'><?define Task2_TargetDir=$(var.Task2.TargetDir)?>
+	<Product Id="475ff685-cdff-4c26-8b3d-938d735ce084" 
+           Name="Task2" 
+           Language="1033" 
+           Version="1.0.0.0" 
+           Manufacturer="Some Company" 
+           UpgradeCode="11a0dc29-be8b-4106-be63-65ee6aee1e92">
+		<Package InstallerVersion="200" Compressed="yes" InstallScope="perMachine" />
+
+    <!-- Добавляем кастомный бэкграунд и текст лицензию -->
+    <WixVariable Id="WixUIDialogBmp" Value="Images\installer_background.bmp" />
+    <WixVariable Id="WixUILicenseRtf" Value="$(var.ProjectDir)\license.rtf" />
+
+    <!-- Добавляем меню с возможностью выбора папки -->
+    <Property Id="WIXUI_INSTALLDIR" Value="INSTALLFOLDER" />
+    <UIRef Id="WixUI_InstallDir" />
+    
+		<MajorUpgrade DowngradeErrorMessage="A newer version of [ProductName] is already installed." />
+		<MediaTemplate EmbedCab="yes"/>
+
+		<Feature Id="ProductFeature" Title="Task2" Level="1">
+			<ComponentGroupRef Id="ProductComponents" />
+      <ComponentRef Id="ApplicationShortcut"/>
+      <ComponentRef Id="ApplicationShortcutDesktop"/>
+		</Feature>
+
+    <Binary Id='CreateTable' SourceFile='CreateTable.sql' />
+    <Feature Id='SqlFeature' Title='SqlFeature' Level='1'>
+      <ComponentRef Id='SqlComponent' />
+    </Feature>
+  </Product>
+
+  
+  <Fragment>
+    <Directory Id="TARGETDIR" Name="SourceDir">
+      <Directory Id="ProgramFilesFolder">
+        <Directory Id="INSTALLFOLDER" Name="Task2">
+          <Component Id='SqlComponent' Guid='a8cb3a38-b45f-44aa-a5be-3e98f0bf836b' KeyPath='yes'>
+            <sql:SqlDatabase  Server=".\sqlexpress" Id="master" Database="KPKtest" CreateOnInstall='yes' DropOnUninstall='yes' ContinueOnError='no'>
+              <sql:SqlScript Id='CreateTable' BinaryKey='CreateTable' ExecuteOnInstall='yes' />
+            </sql:SqlDatabase>
+          </Component>
+          <Directory Id="Files" Name="Files" />
+        </Directory>
+      </Directory>
+      <Directory Id="ProgramMenuFolder">
+        <Directory Id="ApplicationProgramsFolder" Name="Task2" />
+      </Directory>
+      <Directory Id="DesktopFolder" Name="Desktop" />
+    </Directory>
+  </Fragment>
+				
+			<!-- Добавляем ShortCut -->
+  <Fragment>
+    <DirectoryRef Id="ApplicationProgramsFolder">
+      <Component Id="ApplicationShortcut" Guid="9bd13330-6540-406f-a3a8-d7f7c69ae7f9">
+        <Shortcut Id="ApplicationStartMenuShortcut" Name="Task2" Description="Task2" Target="[INSTALLFOLDER]Task2.exe" WorkingDirectory="INSTALLFOLDER" />
+        <RemoveFolder Id="RemoveApplicationProgramsFolder" Directory="ApplicationProgramsFolder" On="uninstall" />
+        <RegistryValue Root="HKCU" Key="Software\Task2" Name="installed" Type="integer" Value="1" KeyPath="yes" />
+      </Component>
+    </DirectoryRef>
+    <DirectoryRef Id="DesktopFolder">
+      <Component Id="ApplicationShortcutDesktop" Guid="cde1e030-eb64-49a5-b7b8-400b379c2d1a">
+        <Shortcut Id="ApplicationDesktopShortcut" Name="Task2" Description="Task2" Target="[INSTALLFOLDER]Task2.exe" WorkingDirectory="INSTALLFOLDER" />
+        <RemoveFolder Id="RemoveDesktopFolder" Directory="DesktopFolder" On="uninstall" />
+        <RegistryValue Root="HKCU" Key="Software\Task2" Name="installed" Type="integer" Value="1" KeyPath="yes" />
+      </Component>
+    </DirectoryRef>
+  </Fragment>
+  
+  
+	<Fragment>
+		<ComponentGroup Id="ProductComponents" Directory="INSTALLFOLDER">
+			<Component Id="Task2.exe" Guid="e7880700-abf1-441d-87a9-1190e93da732">
+			  <File Id="Task2.exe" Name="Task2.exe" Source="$(var.Task2_TargetDir)Task2.exe" />
+			</Component>
+			<Component Id="Task2.exe.config" Guid="ee9e0fd2-482e-4b15-bae3-3579f96d700c">
+			  <File Id="Task2.exe.config" Name="Task2.exe.config" Source="$(var.Task2_TargetDir)Task2.exe.config" />
+			</Component>
+		</ComponentGroup>
+	</Fragment>
+
+</Wix>
