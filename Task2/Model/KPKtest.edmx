@@ -1,0 +1,147 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<edmx:Edmx Version="3.0" xmlns:edmx="http://schemas.microsoft.com/ado/2009/11/edmx">
+  <!-- EF Runtime content -->
+  <edmx:Runtime>
+    <!-- SSDL content -->
+    <edmx:StorageModels>
+      <Schema Namespace="Хранилище KPKtestModel" Provider="System.Data.SqlClient" ProviderManifestToken="2008" Alias="Self" xmlns:store="http://schemas.microsoft.com/ado/2007/12/edm/EntityStoreSchemaGenerator" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm/ssdl">
+        <EntityType Name="Parameters">
+          <Key>
+            <PropertyRef Name="ParameterId" />
+          </Key>
+          <Property Name="ParameterId" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="TestId" Type="int" Nullable="false" />
+          <Property Name="ParameterName" Type="nvarchar" MaxLength="200" Nullable="false" />
+          <Property Name="RequiredValue" Type="decimal" Precision="18" Scale="3" Nullable="false" />
+          <Property Name="MeasuredValue" Type="decimal" Precision="18" Scale="3" Nullable="false" />
+        </EntityType>
+        <EntityType Name="Tests">
+          <Key>
+            <PropertyRef Name="TestId" />
+          </Key>
+          <Property Name="TestId" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="TestDate" Type="smalldatetime" Nullable="false" />
+          <Property Name="BlockName" Type="nvarchar" MaxLength="50" Nullable="false" />
+          <Property Name="Note" Type="nvarchar" MaxLength="200" />
+        </EntityType>
+        <Association Name="Parameters_TestId">
+          <End Role="Tests" Type="Self.Tests" Multiplicity="1">
+            <OnDelete Action="Cascade" />
+          </End>
+          <End Role="Parameters" Type="Self.Parameters" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Tests">
+              <PropertyRef Name="TestId" />
+            </Principal>
+            <Dependent Role="Parameters">
+              <PropertyRef Name="TestId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <EntityContainer Name="Хранилище KPKtestModelContainer">
+          <EntitySet Name="Parameters" EntityType="Self.Parameters" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="Tests" EntityType="Self.Tests" Schema="dbo" store:Type="Tables" />
+          <AssociationSet Name="Parameters_TestId" Association="Self.Parameters_TestId">
+            <End Role="Tests" EntitySet="Tests" />
+            <End Role="Parameters" EntitySet="Parameters" />
+          </AssociationSet>
+        </EntityContainer>
+      </Schema>
+    </edmx:StorageModels>
+    <!-- CSDL content -->
+    <edmx:ConceptualModels>
+      <Schema Namespace="KPKtestModel" Alias="Self" annotation:UseStrongSpatialTypes="false" xmlns:annotation="http://schemas.microsoft.com/ado/2009/02/edm/annotation" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm">
+        <EntityType Name="Parameter">
+          <Key>
+            <PropertyRef Name="ParameterId" />
+          </Key>
+          <Property Name="ParameterId" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="TestId" Type="Int32" Nullable="false" />
+          <Property Name="ParameterName" Type="String" MaxLength="200" FixedLength="false" Unicode="true" Nullable="false" />
+          <Property Name="RequiredValue" Type="Decimal" Precision="18" Scale="3" Nullable="false" />
+          <Property Name="MeasuredValue" Type="Decimal" Precision="18" Scale="3" Nullable="false" />
+          <NavigationProperty Name="Tests" Relationship="Self.Parameters_TestId" FromRole="Parameters" ToRole="Tests" />
+        </EntityType>
+        <EntityType Name="Test">
+          <Key>
+            <PropertyRef Name="TestId" />
+          </Key>
+          <Property Name="TestId" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="TestDate" Type="DateTime" Nullable="false" Precision="0" />
+          <Property Name="BlockName" Type="String" MaxLength="50" FixedLength="false" Unicode="true" Nullable="false" />
+          <Property Name="Note" Type="String" MaxLength="200" FixedLength="false" Unicode="true" />
+          <NavigationProperty Name="Parameters" Relationship="Self.Parameters_TestId" FromRole="Tests" ToRole="Parameters" />
+        </EntityType>
+        <Association Name="Parameters_TestId">
+          <End Role="Tests" Type="KPKtestModel.Test" Multiplicity="1">
+            <OnDelete Action="Cascade" />
+          </End>
+          <End Role="Parameters" Type="KPKtestModel.Parameter" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Tests">
+              <PropertyRef Name="TestId" />
+            </Principal>
+            <Dependent Role="Parameters">
+              <PropertyRef Name="TestId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <EntityContainer Name="KPKtestEntities" annotation:LazyLoadingEnabled="true">
+          <EntitySet Name="Parameters" EntityType="KPKtestModel.Parameter" />
+          <EntitySet Name="Tests" EntityType="KPKtestModel.Test" />
+          <AssociationSet Name="Parameters_TestId" Association="Self.Parameters_TestId">
+            <End Role="Tests" EntitySet="Tests" />
+            <End Role="Parameters" EntitySet="Parameters" />
+          </AssociationSet>
+        </EntityContainer>
+      </Schema>
+    </edmx:ConceptualModels>
+    <!-- C-S mapping content -->
+    <edmx:Mappings>
+      <Mapping Space="C-S" xmlns="http://schemas.microsoft.com/ado/2009/11/mapping/cs">
+        <EntityContainerMapping StorageEntityContainer="Хранилище KPKtestModelContainer" CdmEntityContainer="KPKtestEntities">
+          <EntitySetMapping Name="Parameters">
+            <EntityTypeMapping TypeName="KPKtestModel.Parameter">
+              <MappingFragment StoreEntitySet="Parameters">
+                <ScalarProperty Name="ParameterId" ColumnName="ParameterId" />
+                <ScalarProperty Name="TestId" ColumnName="TestId" />
+                <ScalarProperty Name="ParameterName" ColumnName="ParameterName" />
+                <ScalarProperty Name="RequiredValue" ColumnName="RequiredValue" />
+                <ScalarProperty Name="MeasuredValue" ColumnName="MeasuredValue" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="Tests">
+            <EntityTypeMapping TypeName="KPKtestModel.Test">
+              <MappingFragment StoreEntitySet="Tests">
+                <ScalarProperty Name="TestId" ColumnName="TestId" />
+                <ScalarProperty Name="TestDate" ColumnName="TestDate" />
+                <ScalarProperty Name="BlockName" ColumnName="BlockName" />
+                <ScalarProperty Name="Note" ColumnName="Note" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+        </EntityContainerMapping>
+      </Mapping>
+    </edmx:Mappings>
+  </edmx:Runtime>
+  <!-- EF Designer content (DO NOT EDIT MANUALLY BELOW HERE) -->
+  <Designer xmlns="http://schemas.microsoft.com/ado/2009/11/edmx">
+    <Connection>
+      <DesignerInfoPropertySet>
+        <DesignerProperty Name="MetadataArtifactProcessing" Value="EmbedInOutputAssembly" />
+      </DesignerInfoPropertySet>
+    </Connection>
+    <Options>
+      <DesignerInfoPropertySet>
+        <DesignerProperty Name="ValidateOnBuild" Value="true" />
+        <DesignerProperty Name="EnablePluralization" Value="false" />
+        <DesignerProperty Name="IncludeForeignKeysInModel" Value="true" />
+        <DesignerProperty Name="UseLegacyProvider" Value="false" />
+        <DesignerProperty Name="CodeGenerationStrategy" Value="Нет" />
+      </DesignerInfoPropertySet>
+    </Options>
+    <!-- Diagram content (shape and connector positions) -->
+    <Diagrams></Diagrams>
+  </Designer>
+</edmx:Edmx>
