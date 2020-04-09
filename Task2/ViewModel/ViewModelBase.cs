@@ -15,7 +15,7 @@ namespace Task2.ViewModel
 
         public event PropertyChangedEventHandler PropertyChanged;
 
-        public virtual void OnPropertyChange(string propertyName)
+        public virtual void OnPropertyChanged(string propertyName)
         {
             PropertyChangedEventHandler handler = this.PropertyChanged;
             if (handler != null)
