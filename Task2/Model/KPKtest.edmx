@@ -60,7 +60,7 @@
           <Property Name="ParameterName" Type="String" MaxLength="200" FixedLength="false" Unicode="true" Nullable="false" />
           <Property Name="RequiredValue" Type="Decimal" Precision="18" Scale="3" Nullable="false" />
           <Property Name="MeasuredValue" Type="Decimal" Precision="18" Scale="3" Nullable="false" />
-          <NavigationProperty Name="Tests" Relationship="Self.Parameters_TestId" FromRole="Parameters" ToRole="Tests" />
+          <NavigationProperty Name="Test" Relationship="Self.Parameters_TestId" FromRole="Parameters" ToRole="Tests" />
         </EntityType>
         <EntityType Name="Test">
           <Key>
@@ -73,10 +73,10 @@
           <NavigationProperty Name="Parameters" Relationship="Self.Parameters_TestId" FromRole="Tests" ToRole="Parameters" />
         </EntityType>
         <Association Name="Parameters_TestId">
-          <End Role="Tests" Type="KPKtestModel.Test" Multiplicity="1">
+          <End Role="Tests" Type="Self.Test" Multiplicity="1">
             <OnDelete Action="Cascade" />
           </End>
-          <End Role="Parameters" Type="KPKtestModel.Parameter" Multiplicity="*" />
+          <End Role="Parameters" Type="Self.Parameter" Multiplicity="*" />
           <ReferentialConstraint>
             <Principal Role="Tests">
               <PropertyRef Name="TestId" />
@@ -87,8 +87,8 @@
           </ReferentialConstraint>
         </Association>
         <EntityContainer Name="KPKtestEntities" annotation:LazyLoadingEnabled="true">
-          <EntitySet Name="Parameters" EntityType="KPKtestModel.Parameter" />
-          <EntitySet Name="Tests" EntityType="KPKtestModel.Test" />
+          <EntitySet Name="Parameters" EntityType="Self.Parameter" />
+          <EntitySet Name="Tests" EntityType="Self.Test" />
           <AssociationSet Name="Parameters_TestId" Association="Self.Parameters_TestId">
             <End Role="Tests" EntitySet="Tests" />
             <End Role="Parameters" EntitySet="Parameters" />
@@ -135,7 +135,7 @@
     <Options>
       <DesignerInfoPropertySet>
         <DesignerProperty Name="ValidateOnBuild" Value="true" />
-        <DesignerProperty Name="EnablePluralization" Value="false" />
+        <DesignerProperty Name="EnablePluralization" Value="true" />
         <DesignerProperty Name="IncludeForeignKeysInModel" Value="true" />
         <DesignerProperty Name="UseLegacyProvider" Value="false" />
         <DesignerProperty Name="CodeGenerationStrategy" Value="Нет" />

@@ -4,11 +4,14 @@
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:Task2.ViewModel"
+        xmlns:i="clr-namespace:System.Windows.Interactivity;assembly=System.Windows.Interactivity"
         mc:Ignorable="d"
-        Title="Главное окно" d:DesignWidth="1311.7" d:DesignHeight="783">
+        Title="Главное окно" d:DesignWidth="1311.7" Height="542"
+        SizeToContent="WidthAndHeight"
+        ResizeMode="NoResize">
 
     <Window.DataContext>
-        <local:MainWindowViewModel></local:MainWindowViewModel>
+        <local:MainWindowViewModel/>
     </Window.DataContext>
 
     <Window.Resources>
@@ -25,11 +28,8 @@
             <Setter Property="Width" Value="auto"/>
         </Style>
         <Style TargetType="DatePicker">
-            <Setter Property="HorizontalAlignment" Value="Right" />
-            <Setter Property="HorizontalContentAlignment" Value="Stretch" />
-            <Setter Property="SelectedDateFormat" Value="Short" />
+            <Setter Property="SelectedDateFormat" Value="Long" />
             <Setter Property="FontSize" Value="11" />
-            <Setter Property="DisplayDate" Value="" />
         </Style>
         <Style TargetType="DataGrid">
             <Setter Property="HorizontalGridLinesBrush" Value="DarkGray" />
@@ -38,6 +38,7 @@
             <Setter Property="IsReadOnly" Value="True" />
             <Setter Property="SelectionMode" Value="Single" />
             <Setter Property="HorizontalAlignment" Value="Center" />
+            <Setter Property="AutoGenerateColumns" Value="False"/>
         </Style>
     </Window.Resources>
 
@@ -45,31 +46,31 @@
 
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="*" />
-            <ColumnDefinition Width="*" />
+            <ColumnDefinition Width="auto" />
         </Grid.ColumnDefinitions>
 
         <Grid.RowDefinitions>
-            <RowDefinition Height="*" MinHeight="20"/>
-            <RowDefinition Height="*" MinHeight="20"/>
+            <RowDefinition Height="auto" MinHeight="20"/>
+            <RowDefinition Height="auto" MinHeight="20"/>
         </Grid.RowDefinitions>
 
-        <Label Content="История проверок" Grid.Row="0" Grid.Column="0"/>
+        <Label Content="История проверок" Grid.Row="0" Grid.Column="0" Width="650"/>
 
         <WrapPanel Orientation="Horizontal" Grid.Row="0" Grid.Column="0" Margin="0,32,0,0">
             <GroupBox Header="Добавить" Margin="25,5,0,0">
                 <StackPanel>
-                    <DockPanel Margin="0,5,0,0">
-                        <TextBlock Text="Дата проверки: "/>
-                        <DatePicker HorizontalContentAlignment="Stretch"
-                                    SelectedDate="{Binding Path=CurrentTest.TestDate, UpdateSourceTrigger=PropertyChanged}"/>
-                    </DockPanel>
+                    <WrapPanel Margin="0,5,0,0">
+                        <TextBlock Text="Дата проверки: " VerticalAlignment="Center" Padding="1,0,0,0"/>
+                        <DatePicker 
+                                    SelectedDate="{Binding NewTest.TestDate, UpdateSourceTrigger=PropertyChanged}" Width="123"/>
+                    </WrapPanel>
                     <WrapPanel Orientation="Horizontal"  Margin="0,5,0,0">
-                        <TextBlock Text="Название блока: "/>
-                        <TextBox MaxLength="50" Text="{Binding Path=CurrentTest.BlockName, UpdateSourceTrigger=PropertyChanged}"/>
+                        <TextBlock Text="Название блока: " Margin="0,3,0,0"/>
+                        <TextBox MaxLength="50" Text="{Binding Path=NewTest.BlockName, UpdateSourceTrigger=PropertyChanged}" Width="118" Height="24"/>
                     </WrapPanel>
                     <WrapPanel Orientation="Vertical">
-                        <TextBlock Text="Примечание: "/>
-                        <TextBox TextWrapping="Wrap" MaxLength="200" Text="{Binding Path=CurrentTest.Note, UpdateSourceTrigger=PropertyChanged}"/>
+                        <TextBlock Text="Примечание: " Margin="0,3,0,0"/>
+                        <TextBox TextWrapping="Wrap" MaxLength="200" Text="{Binding Path=NewTest.Note, UpdateSourceTrigger=PropertyChanged}" Height="90" Width="209"/>
                     </WrapPanel>
                     <Button Content="Добавить"
                             Command="{Binding AddTest}"
@@ -79,36 +80,52 @@
 
             <GroupBox Header="Изменить" Margin="5,5,0,0">
                 <StackPanel>
-                    <DockPanel Margin="0,5,0,0">
-                        <TextBlock Text="Дата проверки: "/>
-                        <DatePicker/>
-                    </DockPanel>
+                    <WrapPanel Margin="0,5,0,0">
+                        <TextBlock Text="Дата проверки: " VerticalAlignment="Center" Padding="1,0,0,0"/>
+                        <DatePicker HorizontalContentAlignment="Stretch"
+                                    SelectedDate="{Binding Path=SelTest.TestDate, UpdateSourceTrigger=PropertyChanged}" SelectedDateFormat="Short"/>
+                    </WrapPanel>
                     <WrapPanel Orientation="Horizontal"  Margin="0,5,0,0">
-                        <TextBlock Text="Название блока: "/>
-                        <TextBox MaxLength="50"/>
+                        <TextBlock Text="Название блока: " Margin="0,3,0,0"/>
+                        <TextBox MaxLength="50" Text="{Binding Path=SelTest.BlockName, UpdateSourceTrigger=PropertyChanged}" Width="88" Height="24"/>
                     </WrapPanel>
                     <WrapPanel Orientation="Vertical">
-                        <TextBlock Text="Примечание: "/>
-                        <TextBox TextWrapping="Wrap" MaxLength="200"/>
+                        <TextBlock Text="Примечание: " Margin="0,3,0,0"/>
+                        <TextBox TextWrapping="Wrap" MaxLength="200" Text="{Binding Path=SelTest.Note, UpdateSourceTrigger=PropertyChanged}" Height="90" Width="182"/>
                     </WrapPanel>
                     <Button Content="Изменить"
-                            ToolTip="Добавить новую проверку"
-                            Command="{Binding ChangeTest}"/>
+                            Command="{Binding ChangeTest}"
+                            ToolTip="Изменить проверку"/>
                 </StackPanel>
             </GroupBox>
             <Button 
                     Content="Удалить"
                     ToolTip="Удалить из таблицы выбранную запись"
-                    Command="{Binding DelTest}"/>
+                    VerticalAlignment="Bottom"
+                    Command="{Binding DelTest}" Margin="3,0,0,7"/>
         </WrapPanel>
 
-        <DataGrid Grid.Row="1"
+        <DataGrid 
+                  Name="dgTests"
+                  Grid.Row="1"
                   Grid.Column="0"
                   Margin="0"
                   Width="650"
                   MinHeight="250"
-                  SelectionChanged="testsGrid_SelectionChanged"
                   ItemsSource="{Binding Path=Tests}">
+
+            <DataGrid.Columns>
+                <DataGridTextColumn Binding="{Binding Path=TestDate}" Header="Дата проверки" Width="auto" />
+                <DataGridTextColumn Binding="{Binding Path=BlockName}" Header="Наименование блока" Width="auto"/>
+                <DataGridTextColumn Binding="{Binding Path=Note}" Header="Примечание" Width="*"/>
+            </DataGrid.Columns>
+            <i:Interaction.Triggers>
+                <i:EventTrigger EventName="SelectionChanged">
+                    <i:InvokeCommandAction 
+                        Command="{Binding RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=DataGrid},  
+                        Path=DataContext.SelectedItemChanged}" />
+                </i:EventTrigger>
+            </i:Interaction.Triggers>
         </DataGrid>
 
         <Separator VerticalAlignment="Stretch" HorizontalAlignment="Right" Grid.RowSpan="2" Height="1">
@@ -121,30 +138,30 @@
             <Label Content="Параметры проверки"
                    Grid.Row="0"
                    Grid.Column="1"
-                   Grid.ColumnSpan="2"/>
+                   Grid.ColumnSpan="2" Width="654"/>
         </WrapPanel>
 
         <WrapPanel Orientation="Horizontal" Grid.Row="0" Grid.Column="1" Margin="0,47,0,0" >
-            <GroupBox Header="Добавить" Margin="25,5,0,0" Height="189">
+            <GroupBox Header="Добавить" Margin="25,5,0,0" Height="118">
                 <StackPanel>
                     <DockPanel Margin="0,5,0,0">
                         <TextBlock Text="Наименование параметра: "/>
-                        <TextBox x:Name="parameterNameInsertTextBox" Width="94" HorizontalAlignment="Right" MaxLength="200"/>
+                        <TextBox  Width="94" HorizontalAlignment="Right" MaxLength="200"/>
                     </DockPanel>
                     <DockPanel Margin="0,5,0,0">
                         <TextBlock Text="Требуемое значение: "/>
-                        <TextBox x:Name="requiredValueInsertTextBox" Width="94" HorizontalAlignment="Right"/>
+                        <TextBox  Width="94" HorizontalAlignment="Right"/>
                     </DockPanel>
                     <DockPanel Margin="0,5,0,0">
                         <TextBlock Text="Измеренное значение: "/>
-                        <TextBox x:Name="measuredValueInsertTextBox" Width="94" HorizontalAlignment="Right"/>
+                        <TextBox  Width="94" HorizontalAlignment="Right"/>
                     </DockPanel>
                     <Button Content="Добавить"
                             ToolTip="Добавить новый параметр"/>
                 </StackPanel>
             </GroupBox>
 
-            <GroupBox Header="Изменить" Margin="5,5,0,0" Height="189">
+            <GroupBox Header="Изменить" Margin="5,5,0,0" Height="118">
                 <StackPanel>
                     <DockPanel Margin="0,5,0,0">
                         <TextBlock Text="Наименование параметра: "/>
@@ -163,7 +180,7 @@
                 </StackPanel>
             </GroupBox>
             <Button Content="Удалить"
-                    ToolTip="Удалить из таблицы выбранную запись"/>
+                    ToolTip="Удалить из таблицы выбранную запись" Height="21" VerticalAlignment="Bottom" Margin="0,0,0,8"/>
         </WrapPanel>
 
         <DataGrid 
@@ -173,7 +190,6 @@
                   Grid.Row="1"
                   Grid.Column="1"
                   MinWidth="650"
-                  SelectionChanged="parametersGrid_SelectionChanged"
                   ItemsSource="{Binding Path=Parameters}">
 
             <DataGrid.Columns>

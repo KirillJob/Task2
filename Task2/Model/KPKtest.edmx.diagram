@@ -4,9 +4,9 @@
   <edmx:Designer xmlns="http://schemas.microsoft.com/ado/2009/11/edmx">
     <!-- Diagram content (shape and connector positions) -->
     <edmx:Diagrams>
-      <Diagram DiagramId="163d94c11fd1487d97431951f8bf1272" Name="Diagram1" ShowGrid="true">
-        <EntityTypeShape EntityType="KPKtestModel.Parameter" Width="1.5" PointX="2.75" PointY="0.5" IsExpanded="true" />
-        <EntityTypeShape EntityType="KPKtestModel.Test" Width="1.5" PointX="0.5" PointY="0.5" IsExpanded="true" />
+      <Diagram DiagramId="b442ed1b8a414773b1ac3fdfa08854e3" Name="Diagram1">
+        <EntityTypeShape EntityType="KPKtestModel.Parameter" Width="1.5" PointX="3" PointY="0.875" IsExpanded="true" />
+        <EntityTypeShape EntityType="KPKtestModel.Test" Width="1.5" PointX="0.75" PointY="1" IsExpanded="true" />
         <AssociationConnector Association="KPKtestModel.Parameters_TestId" ManuallyRouted="false" />
       </Diagram>
     </edmx:Diagrams>

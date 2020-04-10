@@ -6,6 +6,8 @@ using System.Threading.Tasks;
 using System.Collections.ObjectModel;
 using Task2.Model;
 using System.Windows.Input;
+using System.Windows.Interactivity;
+
 
 //TODO: Почистить Xaml код: убрать лишние свойста, что можно то стилизовать, соурсы привязать к моделвью, нажатие на кнопки релизовать через команды
 //TODO: Во вьюмодел: реализовать команды, реализовать свойства
@@ -27,13 +29,18 @@ namespace Task2.ViewModel
             }
         }
 
+        #region Логика формы (Добавить новую проверку)
         Test _newTest;
         public Test NewTest
         {
             get
             {
                 if (_newTest == null)
+                {
                     _newTest = new Test();
+                    _newTest.TestDate = DateTime.Now;
+                }    
+                    
                 return _newTest;
             }
             set
@@ -58,6 +65,7 @@ namespace Task2.ViewModel
         public void ExecuteAddTest(object parameter)
         {
             Tests.Add(NewTest);
+            WorkModel.SaveChanges();
             NewTest = null;
         }
 
@@ -66,6 +74,33 @@ namespace Task2.ViewModel
             if (string.IsNullOrEmpty(NewTest.BlockName))
                 return false;
             return true;
+        }
+        #endregion
+
+        Test _selTest;
+        public Test SelTest
+        {
+            get
+            {
+                if (_selTest == null)
+                    _selTest = new Test();
+                return _selTest;
+            }
+            set
+            {
+                _selTest = value;
+                OnPropertyChanged("SelTest");
+            }
+        }
+
+        RelayCommand _selectedItemChanged;
+        public ICommand SelectedItemChanged
+        {
+            get
+            {
+
+                return _selectedItemChanged;
+            }
         }
 
         RelayCommand _changeTest;

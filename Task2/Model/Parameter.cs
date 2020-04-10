@@ -20,6 +20,6 @@ namespace Task2.Model
         public decimal RequiredValue { get; set; }
         public decimal MeasuredValue { get; set; }
     
-        public virtual Test Tests { get; set; }
+        public virtual Test Test { get; set; }
     }
 }

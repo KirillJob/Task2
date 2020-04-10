@@ -19,4 +19,5 @@ namespace Task2
         {
             InitializeComponent();
         }
+    }
 }
