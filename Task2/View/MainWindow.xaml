@@ -30,6 +30,7 @@
         <Style TargetType="DatePicker">
             <Setter Property="SelectedDateFormat" Value="Long" />
             <Setter Property="FontSize" Value="11" />
+            <Setter Property="DisplayDateStart" Value="1/01/1900"/>
         </Style>
         <Style TargetType="DataGrid">
             <Setter Property="HorizontalGridLinesBrush" Value="DarkGray" />
@@ -83,15 +84,15 @@
                     <WrapPanel Margin="0,5,0,0">
                         <TextBlock Text="Дата проверки: " VerticalAlignment="Center" Padding="1,0,0,0"/>
                         <DatePicker HorizontalContentAlignment="Stretch"
-                                    SelectedDate="{Binding Path=SelTest.TestDate, UpdateSourceTrigger=PropertyChanged}" SelectedDateFormat="Short"/>
+                                    SelectedDate="{Binding Path=SelTest.TestDate, UpdateSourceTrigger=PropertyChanged}" Width="126"/>
                     </WrapPanel>
                     <WrapPanel Orientation="Horizontal"  Margin="0,5,0,0">
                         <TextBlock Text="Название блока: " Margin="0,3,0,0"/>
-                        <TextBox MaxLength="50" Text="{Binding Path=SelTest.BlockName, UpdateSourceTrigger=PropertyChanged}" Width="88" Height="24"/>
+                        <TextBox MaxLength="50" Text="{Binding Path=SelTest.BlockName, UpdateSourceTrigger=PropertyChanged}" Width="121" Height="24"/>
                     </WrapPanel>
                     <WrapPanel Orientation="Vertical">
                         <TextBlock Text="Примечание: " Margin="0,3,0,0"/>
-                        <TextBox TextWrapping="Wrap" MaxLength="200" Text="{Binding Path=SelTest.Note, UpdateSourceTrigger=PropertyChanged}" Height="90" Width="182"/>
+                        <TextBox TextWrapping="Wrap" MaxLength="200" Text="{Binding Path=SelTest.Note, UpdateSourceTrigger=PropertyChanged}" Height="90" Width="215"/>
                     </WrapPanel>
                     <Button Content="Изменить"
                             Command="{Binding ChangeTest}"
@@ -106,24 +107,24 @@
         </WrapPanel>
 
         <DataGrid 
-                  Name="dgTests"
+                  x:Name="sel"
                   Grid.Row="1"
                   Grid.Column="0"
                   Margin="0"
                   Width="650"
                   MinHeight="250"
-                  ItemsSource="{Binding Path=Tests}">
+                  ItemsSource="{Binding Path=Tests}"
+                  SelectedItem="{Binding SelTest}">
 
             <DataGrid.Columns>
                 <DataGridTextColumn Binding="{Binding Path=TestDate}" Header="Дата проверки" Width="auto" />
                 <DataGridTextColumn Binding="{Binding Path=BlockName}" Header="Наименование блока" Width="auto"/>
                 <DataGridTextColumn Binding="{Binding Path=Note}" Header="Примечание" Width="*"/>
             </DataGrid.Columns>
+            
             <i:Interaction.Triggers>
-                <i:EventTrigger EventName="SelectionChanged">
-                    <i:InvokeCommandAction 
-                        Command="{Binding RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=DataGrid},  
-                        Path=DataContext.SelectedItemChanged}" />
+                <i:EventTrigger EventName="SelectionChanged" >
+                    <i:InvokeCommandAction Command="{Binding SelectedItemChanged}" />
                 </i:EventTrigger>
             </i:Interaction.Triggers>
         </DataGrid>
@@ -146,18 +147,26 @@
                 <StackPanel>
                     <DockPanel Margin="0,5,0,0">
                         <TextBlock Text="Наименование параметра: "/>
-                        <TextBox  Width="94" HorizontalAlignment="Right" MaxLength="200"/>
+                        <TextBox  Width="94" 
+                                  HorizontalAlignment="Right"
+                                  MaxLength="200"
+                                  Text="{Binding Path=NewParameter.ParameterName, UpdateSourceTrigger=PropertyChanged}"/>
                     </DockPanel>
                     <DockPanel Margin="0,5,0,0">
                         <TextBlock Text="Требуемое значение: "/>
-                        <TextBox  Width="94" HorizontalAlignment="Right"/>
+                        <TextBox  Width="94"
+                                  HorizontalAlignment="Right"
+                                  Text="{Binding Path=NewParameter.RequiredValue, UpdateSourceTrigger=PropertyChanged}"/>
                     </DockPanel>
                     <DockPanel Margin="0,5,0,0">
                         <TextBlock Text="Измеренное значение: "/>
-                        <TextBox  Width="94" HorizontalAlignment="Right"/>
+                        <TextBox  Width="94"
+                                  HorizontalAlignment="Right"
+                                  Text="{Binding Path=NewParameter.MeasuredValue, UpdateSourceTrigger=PropertyChanged}"/>
                     </DockPanel>
                     <Button Content="Добавить"
-                            ToolTip="Добавить новый параметр"/>
+                            ToolTip="Добавить новый параметр"
+                             Command="{Binding AddParameter}"/>
                 </StackPanel>
             </GroupBox>
 
@@ -165,22 +174,37 @@
                 <StackPanel>
                     <DockPanel Margin="0,5,0,0">
                         <TextBlock Text="Наименование параметра: "/>
-                        <TextBox x:Name="parameterNameChangeTextBox" Width="94" HorizontalAlignment="Right" MaxLength="200"/>
+                        <TextBox x:Name="parameterNameChangeTextBox"
+                                 Width="94"
+                                 HorizontalAlignment="Right"
+                                 MaxLength="200"
+                                 Text="{Binding SelParameter.ParameterName}"/>
                     </DockPanel>
                     <DockPanel Margin="0,5,0,0">
                         <TextBlock Text="Требуемое значение: "/>
-                        <TextBox x:Name="requiredValueChangeTextBox" Width="94" HorizontalAlignment="Right"/>
+                        <TextBox x:Name="requiredValueChangeTextBox"
+                                 Width="94"
+                                 HorizontalAlignment="Right"
+                                 Text="{Binding SelParameter.RequiredValue}"/>
                     </DockPanel>
                     <DockPanel Margin="0,5,0,0">
                         <TextBlock Text="Измеренное значение: "/>
-                        <TextBox x:Name="measuredValueChangeTextBox" Width="94" HorizontalAlignment="Right"/>
+                        <TextBox x:Name="measuredValueChangeTextBox"
+                                 Width="94"
+                                 HorizontalAlignment="Right"
+                                 Text="{Binding SelParameter.MeasuredValue}"/>
                     </DockPanel>
                     <Button Content="Изменить"
-                            ToolTip="Изменить выбранный параметр"/>
+                            ToolTip="Изменить выбранный параметр"
+                            Command="{Binding ChangeParameter}"/>
                 </StackPanel>
             </GroupBox>
             <Button Content="Удалить"
-                    ToolTip="Удалить из таблицы выбранную запись" Height="21" VerticalAlignment="Bottom" Margin="0,0,0,8"/>
+                    ToolTip="Удалить из таблицы выбранную запись"
+                    Height="21"
+                    VerticalAlignment="Bottom"
+                    Margin="0,0,0,8"
+                    Command="{Binding DelParameter}"/>
         </WrapPanel>
 
         <DataGrid 
@@ -190,17 +214,18 @@
                   Grid.Row="1"
                   Grid.Column="1"
                   MinWidth="650"
-                  ItemsSource="{Binding Path=Parameters}">
+                  ItemsSource="{Binding Parameters}"
+                  SelectedItem="{Binding SelParameter}">
 
             <DataGrid.Columns>
-                <DataGridTextColumn Binding="{Binding ParameterName}" Header="Наименование параметра" Width="*" />
-                <DataGridTextColumn Binding="{Binding RequiredValue}"  Width="90" >
+                <DataGridTextColumn Binding="{Binding Path=ParameterName}" Header="Наименование параметра" Width="*" />
+                <DataGridTextColumn Binding="{Binding Path=RequiredValue}"  Width="90" >
                     <DataGridTextColumn.Header>
                         <TextBlock Text="Требуемое значение параметра" TextWrapping="Wrap" />
                     </DataGridTextColumn.Header>
                 </DataGridTextColumn>
 
-                <DataGridTextColumn Binding="{Binding MeasuredValue}" Width="90">
+                <DataGridTextColumn Binding="{Binding Path=MeasuredValue}" Width="90">
                     <DataGridTextColumn.Header>
                         <TextBlock Text="Измеренное значение параметра" TextWrapping="Wrap" />
                     </DataGridTextColumn.Header>
