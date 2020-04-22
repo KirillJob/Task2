@@ -1,11 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using System.Collections.ObjectModel;
+﻿using System.Collections.ObjectModel;
 using System.Data.Entity;
-using System.Data.Entity.Migrations;
 
 namespace Task2.Model
 {
@@ -22,7 +16,6 @@ namespace Task2.Model
             kPKtestEntities.Parameters.Load();
             _allTest = kPKtestEntities.Tests.Local;
             _allParameters = kPKtestEntities.Parameters.Local;
-
         }
 
         public static ObservableCollection<Test> GetAllTests()
@@ -34,18 +27,6 @@ namespace Task2.Model
         {
             return _allParameters;
         }
-
-        //public static void AddTest(Test test)
-        //{
-
-
-        //}
-
-        //public static ObservableCollection<Test> UpdateTests(ObservableCollection<Test> tests)
-        //{
-
-        //    return tests;
-        //}
 
         public static ObservableCollection<Parameter> GetParametrsForSelTest(Test selTest)
         {
@@ -65,5 +46,4 @@ namespace Task2.Model
             kPKtestEntities.SaveChanges();
         }
     }
-
 }

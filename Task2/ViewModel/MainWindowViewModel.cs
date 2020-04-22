@@ -1,32 +1,32 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
+using System.Windows.Threading;
 using System.Collections.ObjectModel;
 using Task2.Model;
 using System.Windows.Input;
-using System.Windows.Interactivity;
-using System.Windows;
-
-
-
-//TODO: Почистить Xaml код: убрать лишние свойста, что можно то стилизовать, соурсы привязать к моделвью, нажатие на кнопки релизовать через команды
-//TODO: Во вьюмодел: реализовать команды, реализовать свойства
-//TODO: В модели: реализовать модключение к БД, локальное хранение представления БД, методы взаимодействия с вьюмодел
-//TODO: Реализовать многопоточность (UI в своем потоке, вся логика в своем потоке)
+using System.Threading;
 
 namespace Task2.ViewModel
 {
     class MainWindowViewModel : ViewModelBase
     {
+
+        readonly Dispatcher _dispatcher;
+        public MainWindowViewModel()
+        {
+            _dispatcher = Dispatcher.CurrentDispatcher;
+        }
+
+        #region Cущности связанные с Проверками
         ObservableCollection<Test> _tests;
         public ObservableCollection<Test> Tests
         {
             get
             {
                 if (_tests == null)
-                    _tests = WorkModel.GetAllTests();
+                    //_dispatcher.BeginInvoke(new Action(() => { _tests = WorkModel.GetAllTests(); }));
+                _dispatcher.Invoke(() => { _tests = WorkModel.GetAllTests(); });
+                //_tests = WorkModel.GetAllTests();
                 return _tests;
             }
         }
@@ -50,7 +50,7 @@ namespace Task2.ViewModel
                 OnPropertyChanged("SelTest");
             }
         }
-
+        #endregion 
 
         #region Логика формы (Добавить новую проверку)
         Test _newTest;
@@ -79,15 +79,15 @@ namespace Task2.ViewModel
             get
             {
                 if (_addTest == null)
-                    _addTest = new RelayCommand(ExecuteAddTest, CanExecuteAddTest);
+                    _addTest = new RelayCommand(ExecuteAddTestAsync, CanExecuteAddTest);
                 return _addTest;
             }
         }
 
-        public void ExecuteAddTest(object parameter)
+        public async void ExecuteAddTestAsync(object parameter)
         {
             Tests.Add(NewTest);
-            WorkModel.SaveChanges();
+            await Task.Run(() => WorkModel.SaveChanges());
             NewTest = null;
         }
 
@@ -106,14 +106,14 @@ namespace Task2.ViewModel
             get
             {
                 if (_changeTest == null)
-                    _changeTest = new RelayCommand(ExecuteChangeTest, CanExecuteChangeTest);
+                    _changeTest = new RelayCommand(ExecuteChangeTestAsync, CanExecuteChangeTest);
                 return _changeTest;
             }
         }
 
-        public void ExecuteChangeTest(object parameter)
+        public async void ExecuteChangeTestAsync(object parameter)
         {
-            WorkModel.SaveChanges();
+            await Task.Run(() => WorkModel.SaveChanges());
         }
 
         public bool CanExecuteChangeTest(object parameter)
@@ -131,15 +131,15 @@ namespace Task2.ViewModel
             get
             {
                 if (_delTest == null)
-                    _delTest = new RelayCommand(ExecuteDelTest, CanExecuteDelTest);
+                    _delTest = new RelayCommand(ExecuteDelTestAsync, CanExecuteDelTest);
                 return _delTest;
             }
         }
 
-        public void ExecuteDelTest(object parameter)
+        public async void ExecuteDelTestAsync(object parameter)
         {
             Tests.Remove(SelTest);
-            WorkModel.SaveChanges();
+            await Task.Run(() => WorkModel.SaveChanges());
         }
 
         public bool CanExecuteDelTest(object parameter)
@@ -161,17 +161,23 @@ namespace Task2.ViewModel
             }
         }
 
-        public void ExecuteSelectedItemChanged(object parameter)
+        public async void ExecuteSelectedItemChanged(object parameter)
         {
             Parameters.Clear();
-            foreach (Parameter param in WorkModel.GetParametrsForSelTest(SelTest))
+
+            await Task.Run(() => 
             {
-                Parameters.Add(param);
-            }
+                foreach (Parameter param in WorkModel.GetParametrsForSelTest(SelTest))
+                {
+                    _dispatcher.BeginInvoke((ThreadStart)delegate ()
+                    {
+                        Parameters.Add(param);
+                    });
+                }
+            });
         }
 
-
-
+        #region Сущности связанные с Параметрами
         ObservableCollection<Parameter> _allParameters;
         public ObservableCollection<Parameter> AllParameters
         {
@@ -209,7 +215,6 @@ namespace Task2.ViewModel
                 {
                     _selParameter = new Parameter();
                 }
-
                 return _selParameter;
             }
             set
@@ -218,6 +223,7 @@ namespace Task2.ViewModel
                 OnPropertyChanged("SelParameter");
             }
         }
+        #endregion
 
         #region Логика формы (Добавить новый параметр)
         Parameter _newParameter;
@@ -229,7 +235,6 @@ namespace Task2.ViewModel
                 {
                     _newParameter = new Parameter();
                 }
-
                 return _newParameter;
             }
             set
@@ -245,17 +250,17 @@ namespace Task2.ViewModel
             get
             {
                 if (_addParameter == null)
-                    _addParameter = new RelayCommand(ExecuteAddParameter, CanExecuteAddParameter);
+                    _addParameter = new RelayCommand(ExecuteAddParameterAsync, CanExecuteAddParameter);
                 return _addParameter;
             }
         }
 
-        public void ExecuteAddParameter(object parameter)
+        public async void ExecuteAddParameterAsync(object parameter)
         {
             NewParameter.TestId = SelTest.TestId;
             Parameters.Add(NewParameter);
             AllParameters.Add(NewParameter);
-            WorkModel.SaveChanges();
+            await Task.Run (() => WorkModel.SaveChanges());
             NewParameter = null;
         }
 
@@ -274,14 +279,14 @@ namespace Task2.ViewModel
             get
             {
                 if (_changeParameter == null)
-                    _changeParameter = new RelayCommand(ExecuteChangeParameter, CanExecuteChangeParameter);
+                    _changeParameter = new RelayCommand(ExecuteChangeParameterAsync, CanExecuteChangeParameter);
                 return _changeParameter;
             }
         }
 
-        public void ExecuteChangeParameter(object parameter)
+        public async void ExecuteChangeParameterAsync(object parameter)
         {
-            WorkModel.SaveChanges();
+           await Task.Run (() => WorkModel.SaveChanges());
         }
 
         public bool CanExecuteChangeParameter(object parameter)
@@ -299,16 +304,16 @@ namespace Task2.ViewModel
             get
             {
                 if (_delParameter == null)
-                    _delParameter = new RelayCommand(ExecuteDelParameter, CanExecuteDelParameter);
+                    _delParameter = new RelayCommand(ExecuteDelParameterAsync, CanExecuteDelParameter);
                 return _delParameter;
             }
         }
 
-        public void ExecuteDelParameter(object parameter)
+        public async void ExecuteDelParameterAsync(object parameter)
         {
             AllParameters.Remove(SelParameter);
             Parameters.Remove(SelParameter);
-            WorkModel.SaveChanges();
+            await Task.Run (() => WorkModel.SaveChanges());
         }
 
         public bool CanExecuteDelParameter(object parameter)
