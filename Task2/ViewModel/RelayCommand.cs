@@ -15,12 +15,7 @@ namespace Task2.ViewModel
 
         public RelayCommand(Action<object> execute, Predicate<object> canExecute = null)
         {
-            if (execute == null) // Передаваемое действие обязательно должно быть.
-            {
-                throw new ArgumentNullException("execute");
-            }
-
-            _execute = execute;
+            _execute = execute ?? throw new ArgumentNullException("execute");
             _canExecute = canExecute;
         }
 

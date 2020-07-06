@@ -1,13 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<Wix xmlns="http://schemas.microsoft.com/wix/2006/wi"
-     xmlns:util='http://schemas.microsoft.com/wix/UtilExtension'
-     xmlns:sql='http://schemas.microsoft.com/wix/SqlExtension'><?define Task2_TargetDir=$(var.Task2.TargetDir)?>
-	<Product Id="475ff685-cdff-4c26-8b3d-938d735ce084" 
-           Name="Task2" 
-           Language="1033" 
-           Version="1.0.0.0" 
-           Manufacturer="Some Company" 
-           UpgradeCode="11a0dc29-be8b-4106-be63-65ee6aee1e92">
+<Wix xmlns="http://schemas.microsoft.com/wix/2006/wi" xmlns:util="http://schemas.microsoft.com/wix/UtilExtension" xmlns:sql="http://schemas.microsoft.com/wix/SqlExtension"><?define Task2_TargetDir=$(var.Task2.TargetDir)?>
+	<Product Id="475ff685-cdff-4c26-8b3d-938d735ce084" Name="Task2" Language="1033" Version="1.0.0.0" Manufacturer="Some Company" UpgradeCode="11a0dc29-be8b-4106-be63-65ee6aee1e92">
 		<Package InstallerVersion="200" Compressed="yes" InstallScope="perMachine" />
 
     <!-- Добавляем кастомный бэкграунд и текст лицензию -->
@@ -19,17 +12,18 @@
     <UIRef Id="WixUI_InstallDir" />
     
 		<MajorUpgrade DowngradeErrorMessage="A newer version of [ProductName] is already installed." />
-		<MediaTemplate EmbedCab="yes"/>
+		<MediaTemplate EmbedCab="yes" />
 
 		<Feature Id="ProductFeature" Title="Task2" Level="1">
 			<ComponentGroupRef Id="ProductComponents" />
-      <ComponentRef Id="ApplicationShortcut"/>
-      <ComponentRef Id="ApplicationShortcutDesktop"/>
+      <ComponentRef Id="ApplicationShortcut" />
+      <ComponentRef Id="ApplicationShortcutDesktop" />
+			<ComponentGroupRef Id="Files_files" />
 		</Feature>
 
-    <Binary Id='CreateTable' SourceFile='CreateTable.sql' />
-    <Feature Id='SqlFeature' Title='SqlFeature' Level='1'>
-      <ComponentRef Id='SqlComponent' />
+    <Binary Id="CreateTable" SourceFile="CreateTable.sql" />
+    <Feature Id="SqlFeature" Title="SqlFeature" Level="1">
+      <ComponentRef Id="SqlComponent" />
     </Feature>
   </Product>
 
@@ -38,9 +32,9 @@
     <Directory Id="TARGETDIR" Name="SourceDir">
       <Directory Id="ProgramFilesFolder">
         <Directory Id="INSTALLFOLDER" Name="Task2">
-          <Component Id='SqlComponent' Guid='a8cb3a38-b45f-44aa-a5be-3e98f0bf836b' KeyPath='yes'>
-            <sql:SqlDatabase  Server=".\sqlexpress" Id="master" Database="KPKtest" CreateOnInstall='yes' DropOnUninstall='yes' ContinueOnError='no'>
-              <sql:SqlScript Id='CreateTable' BinaryKey='CreateTable' ExecuteOnInstall='yes' />
+          <Component Id="SqlComponent" Guid="a8cb3a38-b45f-44aa-a5be-3e98f0bf836b" KeyPath="yes">
+            <sql:SqlDatabase Server=".\sqlexpress" Id="master" Database="KPKtest" CreateOnInstall="yes" DropOnUninstall="yes" ContinueOnError="no">
+              <sql:SqlScript Id="CreateTable" BinaryKey="CreateTable" ExecuteOnInstall="yes" />
             </sql:SqlDatabase>
           </Component>
           <Directory Id="Files" Name="Files" />
@@ -80,7 +74,24 @@
 			<Component Id="Task2.exe.config" Guid="ee9e0fd2-482e-4b15-bae3-3579f96d700c">
 			  <File Id="Task2.exe.config" Name="Task2.exe.config" Source="$(var.Task2_TargetDir)Task2.exe.config" />
 			</Component>
+			<Component Id="System.Windows.Interactivity.dll" Guid="14ae03a0-02f3-420a-92c0-3a93ce32a73c">
+			  <File Id="System.Windows.Interactivity.dll" Name="System.Windows.Interactivity.dll" Source="$(var.Task2_TargetDir)System.Windows.Interactivity.dll" />
+			</Component>
+			<Component Id="EntityFramework.dll" Guid="9247fe97-ea21-447f-8bd8-85606488faaf">
+			  <File Id="EntityFramework.dll" Name="EntityFramework.dll" Source="$(var.Task2_TargetDir)EntityFramework.dll" />
+			</Component>
 		</ComponentGroup>
 	</Fragment>
 
+
+  <Fragment>
+    <ComponentGroup Id="Files_files" Directory="Files">
+      <Component Id="Model_KPKTest.Context.tt" Guid="cf548a57-9439-4f2c-ac5a-4d3bbafc1ea4">
+        <File Id="Model_KPKTest.Context.tt" Name="KPKTest.Context.tt" Source="$(var.Task2_TargetDir)Model\KPKTest.Context.tt" />
+      </Component>
+      <Component Id="Model_KPKTest.tt" Guid="145304e5-a190-4a0b-968c-9ad8e0e55d1f">
+        <File Id="Model_KPKTest.tt" Name="KPKTest.tt" Source="$(var.Task2_TargetDir)Model\KPKTest.tt" />
+      </Component>
+    </ComponentGroup>
+  </Fragment>
 </Wix>

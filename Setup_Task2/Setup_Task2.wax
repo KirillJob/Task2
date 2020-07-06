@@ -5,9 +5,10 @@
   </DeployedProjects>
   <DirectoryMappings>
     <Item Key="" Value="INSTALLFOLDER" />
+    <Item Key="Model" Value="Files" />
   </DirectoryMappings>
   <FileMappings />
   <DeploySymbols>false</DeploySymbols>
   <DeployLocalizations>true</DeployLocalizations>
-  <DeployExternalLocalizations>false</DeployExternalLocalizations>
+  <DeployExternalLocalizations>true</DeployExternalLocalizations>
 </Configuration>

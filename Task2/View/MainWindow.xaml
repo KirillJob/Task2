@@ -4,7 +4,6 @@
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:Task2.ViewModel"
-        xmlns:i="clr-namespace:System.Windows.Interactivity;assembly=System.Windows.Interactivity"
         mc:Ignorable="d"
         Title="Главное окно" d:DesignWidth="1311.7" Height="542"
         SizeToContent="WidthAndHeight"
@@ -148,7 +147,7 @@
                   Width="650"
                   MinHeight="250"
                   ItemsSource="{Binding Path=Tests}"
-                  SelectedItem="{Binding SelTest}">
+                  SelectedItem="{Binding SelTest, Mode=TwoWay}">
 
             <DataGrid.Columns>
                 <DataGridTextColumn Binding="{Binding Path=TestDate}" Header="Дата проверки" Width="auto" />
@@ -156,11 +155,6 @@
                 <DataGridTextColumn Binding="{Binding Path=Note}" Header="Примечание" Width="*"/>
             </DataGrid.Columns>
             
-            <i:Interaction.Triggers>
-                <i:EventTrigger EventName="SelectionChanged" >
-                    <i:InvokeCommandAction Command="{Binding SelectedItemChanged}" />
-                </i:EventTrigger>
-            </i:Interaction.Triggers>
         </DataGrid>
 
         <Separator VerticalAlignment="Stretch" HorizontalAlignment="Right" Grid.RowSpan="2" Height="1">

@@ -1,4 +1,5 @@
 ﻿using System.ComponentModel;
+using System.Runtime.CompilerServices;
 
 namespace Task2.ViewModel
 {
@@ -6,13 +7,9 @@ namespace Task2.ViewModel
     {
         public event PropertyChangedEventHandler PropertyChanged;
 
-        public virtual void OnPropertyChanged(string propertyName)
+        protected virtual void OnPropertyChanged([CallerMemberName]string propertyName = null)
         {
-            PropertyChangedEventHandler handler = this.PropertyChanged;
-            if (handler != null)
-            {
-                handler.Invoke(this, new PropertyChangedEventArgs(propertyName)); 
-            }
+            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
         }
     }
 }
