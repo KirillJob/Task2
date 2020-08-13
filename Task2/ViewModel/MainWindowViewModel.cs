@@ -10,10 +10,11 @@ namespace Task2.ViewModel
     {
 
         readonly Dispatcher _dispatcher;
+        MainModel mainModel = null;
         public MainWindowViewModel()
         {
             _dispatcher = Dispatcher.CurrentDispatcher;
-            MainModel.GetInstance();
+            mainModel = new MainModel();
         }
 
         #region Cущности связанные с Проверками
@@ -23,7 +24,7 @@ namespace Task2.ViewModel
             get
             {
                 if (_tests == null)
-                _dispatcher.Invoke(() => { _tests = MainModel.Tests; });
+                _dispatcher.Invoke(() => { _tests = mainModel.Tests; });
 
                 return _tests;
             }
@@ -88,7 +89,7 @@ namespace Task2.ViewModel
 
         public void ExecuteAddTest(object parameter)
         {
-            MainModel.AddTest(NewTest);
+            mainModel.AddTest(NewTest);
             NewTest = null;
         }
 
@@ -114,7 +115,7 @@ namespace Task2.ViewModel
 
         public void ExecuteChangeTest(object parameter)
         {
-            MainModel.ChangeTest();
+            mainModel.ChangeTest();
         }
 
         public bool CanExecuteChangeTest(object parameter)
@@ -139,7 +140,7 @@ namespace Task2.ViewModel
 
         public void ExecuteDelTest(object parameter)
         {
-            MainModel.DelTest(SelTest);
+            mainModel.DelTest(SelTest);
         }
 
         public bool CanExecuteDelTest(object parameter)
@@ -222,7 +223,7 @@ namespace Task2.ViewModel
 
         public void ExecuteAddParameter(object parameter)
         {
-            MainModel.AddParameter(NewParameter);
+            mainModel.AddParameter(NewParameter);
             NewParameter = null;
         }
 
@@ -248,7 +249,7 @@ namespace Task2.ViewModel
 
         public void ExecuteChangeParameter(object parameter)
         {
-            MainModel.ChangeParameter();
+            mainModel.ChangeParameter();
         }
 
         public bool CanExecuteChangeParameter(object parameter)
@@ -273,7 +274,7 @@ namespace Task2.ViewModel
 
         public void ExecuteDelParameter(object parameter)
         {
-            MainModel.RemoveParameter(SelParameter);
+            mainModel.RemoveParameter(SelParameter);
         }
 
         public bool CanExecuteDelParameter(object parameter)

@@ -7,61 +7,48 @@ namespace Task2.Model
 {
     public class MainModel
     {
-        private MainModel () { }
-
-        private static MainModel _instance;
-        private static IDB db;
-        private static readonly object _lock = new object();
-
-        public static ObservableCollection<Parameter> Parameters { get; set; } = new ObservableCollection<Parameter>();
-        public static ObservableCollection<Test> Tests { get; set; } = new ObservableCollection<Test>();
-        public static MainModel GetInstance()
+        public MainModel () 
         {
-            if (_instance == null)
-            {
-                lock (_lock)
-                {
-                    if (_instance == null)
-                    {
-                        _instance = new MainModel();
-                        db = new ModelDB();
-                        Tests = db.GetTests();
-                        Parameters = db.GetParameters();
-                    }
-                }
-            }
-            return _instance;
+            db = new ModelDB();
+            Tests = db.GetTests();
+            Parameters = db.GetParameters();
         }
 
-        private static async void SaveChangesAsync ()
+        private  IDB db;
+
+        public ObservableCollection<Parameter> Parameters { get; set; } = new ObservableCollection<Parameter>();
+        public ObservableCollection<Test> Tests { get; set; } = new ObservableCollection<Test>();
+
+
+        private async void SaveChangesAsync ()
         {
             await Task.Run(() => db.SaveChanges());
         }
 
-        public static void AddTest(Test t)
+        public void AddTest(Test t)
         {
             Tests.Add(t);
             SaveChangesAsync();
         }
-        public static void ChangeTest()
+        public void ChangeTest()
         {
             SaveChangesAsync();
         }
-        public static void DelTest(Test t)
+        public void DelTest(Test t)
         {
             Tests.Remove(t);
             SaveChangesAsync();
         }
-        public static void AddParameter(Parameter p)
+        public void AddParameter(Parameter p)
         {
             Parameters.Add(p);
             SaveChangesAsync();
         }
-        public static void ChangeParameter()
+        public void ChangeParameter()
         {
             SaveChangesAsync();
         }
-        public static void RemoveParameter(Parameter p)
+        public void RemoveParameter(Parameter p)
         {
             Parameters.Remove(p);
             SaveChangesAsync();
